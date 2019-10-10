@@ -38,7 +38,25 @@ var ivory = {
             let dimensions = selected.ivory.dimensions;
             let mode = dimensions.mode[0];
 
-            if(mode === "standard"){
+            if ( mode === "bootstrap"){
+                let bootstrap = dimensions.bootstrap;
+                let counter = bootstrap.counter;
+
+                if (encoder === 1){
+                    dimensions.bootstrap.counter += 1;
+                    
+                    if(counter % 6 === 0){
+                        leftRotate(bootstrap.gridWidth);
+                        gridDefine(document.deviceWidth, bootstrap.gridWidth[0], selected);
+                    }
+                } else if (encoder === 0) {
+                    dimensions.bootstrap.counter -= 1
+                    if (counter % 6 === 0){
+                        rightRotate(bootstrap.gridWidth);
+                        gridDefine(document.deviceWidth, bootstrap.gridWidth[0], selected);
+                    }
+                }
+            } else if(mode === "standard"){
                 if(encoder === 1){
                     dimensions[mode].height += 4;
                     selected.style.height = dimensions[mode].height + 'px';
@@ -83,7 +101,15 @@ var ivory = {
             let dimensions = selected.ivory.dimensions;
             let mode = dimensions.mode[0];
 
-            if(mode === "standard"){
+            if(mode === "bootstrap"){
+                if(encoder === 1){
+                    dimensions[mode].height += 4;
+                    selected.style.height = dimensions[mode].height + 'px';
+                } else if(encoder === 0){
+                    dimensions[mode].height -= 4;
+                    selected.style.height = dimensions[mode].height + 'px';
+                }
+            } else if(mode === "standard"){
                 if(encoder === 1){
                     dimensions[mode].width += 4;
                     selected.style.width = dimensions[mode].width + 'px';
@@ -151,11 +177,11 @@ var ivory = {
                     selected.style.marginBottom = dimensions[mode].bottom + 'px';
                 }
             } else if(mode === "standard"){
-                if(encoder === 1){
-                    selectNext();
-                } else if(encoder === 0){
-                    selectPrev();
-                }
+                //if(encoder === 1){
+                //    selectNext();
+                //} else if(encoder === 0){
+                //    selectPrev();
+                //}
             }
         }),
         e4: socket.on('e4', function(encoder){
@@ -272,11 +298,17 @@ function addElement(){
 }
 
 function initialize(){
+    getWindowWidth();
+    window.addEventListener("resize", getWindowWidth);
+
     var start = document.firstElementChild.lastElementChild;
     var newElement = document.createElement('div');
+
     newElement.classList.toggle('selected');
     start.append(newElement);
+
     attachController(newElement);
+
     return newElement;
 }
 
@@ -304,4 +336,107 @@ function changeMode(){
     var first = selected.ivory.dimensions.mode.shift();
     selected.ivory.dimensions.mode.push(first);
     console.log(`Current Mode : ${selected.ivory.dimensions.mode[0]}`);
+}
+
+function leftRotate(arr){
+    if(arr.length > 0){
+        var firstItem = arr.shift()
+        arr.push(firstItem);
+        return arr
+    } else {
+        throw new Error('Array is empty.')
+    }
+}
+
+function rightRotate(arr){
+    if(arr.length > 0){
+        var lastItem = arr.pop()
+        arr.unshift(lastItem);
+        return arr
+    } else {
+        throw new Error('Array is empty.')
+    }
+}
+
+function getWindowWidth(){
+    // Get width and height of the window excluding scrollbars
+    var w = document.documentElement.clientWidth;
+    var deviceWidth;
+
+        if(w < 576){
+            deviceWidth = 'col-'
+        } else if( w <= 767 ){
+            deviceWidth = 'col-sm-'
+        } else if( w <= 991 ){
+            deviceWidth = 'col-md-'
+        } else if( w <= 1199 ){
+            deviceWidth = 'col-lg-'
+        } else if( w >= 1200 ){
+            deviceWidth = 'col-xl-'
+        }
+
+    return document.deviceWidth = deviceWidth
+}
+
+function gridDefine(deviceWidth, gridWidth, target){
+    console.log(deviceWidth + gridWidth)
+    console.log(gridWidth)
+    const colRegex = {
+        xs: /col-[0-9]{1,2}/,
+        sm: /col-sm-[0-9]{1,2}/,
+        md: /col-md-[0-9]{1,2}/,
+        lg: /col-lg-[0-9]{1,2}/,
+        xl: /col-xl-[0-9]{1,2}/
+    }
+
+    console.log(target.className);
+
+
+    switch(deviceWidth){
+        case 'col-':
+            if(target.className.search(colRegex.xs) === -1){
+                console.log('toggling element')
+                target.classList.toggle(deviceWidth + gridWidth)
+            } else if( target.className.search(colRegex.xs) >= 0){
+                console.log('other condition');
+                target.className = target.className.replace(colRegex.xs, deviceWidth + gridWidth)
+            }
+            break;
+        case 'col-sm-':
+            if(target.className.search(colRegex.sm) === -1){
+                console.log('toggling element')
+                target.classList.toggle(deviceWidth + gridWidth)
+            } else if( target.className.search(colRegex.sm) >= 0){
+                console.log('other condition');
+                target.className = target.className.replace(colRegex.sm, deviceWidth + gridWidth)
+            }
+            break;
+        case 'col-md-':
+            if(target.className.search(colRegex.md) === -1){
+                console.log('toggling element')
+                target.classList.toggle(deviceWidth + gridWidth)
+            } else if( target.className.search(colRegex.md) >= 0){
+                console.log('other condition');
+                target.className = target.className.replace(colRegex.md, deviceWidth + gridWidth)
+            }
+            break;
+        case 'col-lg-':
+            if(target.className.search(colRegex.lg) === -1){
+                console.log('toggling element')
+                target.classList.toggle(deviceWidth + gridWidth)
+            } else if( target.className.search(colRegex.lg) >= 0){
+                console.log('other condition');
+                target.className = target.className.replace(colRegex.lg, deviceWidth + gridWidth)
+            }
+            break;
+        case 'col-xl-':
+            if(target.className.search(colRegex.xl) === -1){
+                console.log('toggling element')
+                target.classList.toggle(deviceWidth + gridWidth)
+            } else if( target.className.search(colRegex.xl) >= 0){
+                console.log('other condition');
+                target.className = target.className.replace(colRegex.xl, deviceWidth + gridWidth)
+            }
+            break;
+    }
 }

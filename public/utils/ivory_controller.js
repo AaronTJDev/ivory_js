@@ -7,6 +7,10 @@ function Color (){
 }
 
 function Dimensions (){
+    this.bootstrap = {
+        counter : 0,
+        gridWidth : [ 0,1,2,3,4,5,6,7,8,9,10,11,12 ]
+    },
     this.standard = {
         width : 0,
         height : 0
@@ -29,7 +33,8 @@ function Dimensions (){
         top:0,
         bottom:0
     },
-    this.mode = ['standard', 'padding',  'border', 'margin'];
+    
+    this.mode = ['bootstrap', 'standard', 'padding',  'border', 'margin']
 }
 
 function Controller(){

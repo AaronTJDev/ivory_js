@@ -30,7 +30,7 @@ board.on("ready", function(){
     var s4 = new five.Sensor({
         pin: "A3",
         freq: 50,
-        threshold:3
+        threshold:2
     });
 
     // ROTARY ENCODER INITIALIZATION
@@ -104,7 +104,6 @@ board.on("ready", function(){
     });
 
     app.use(express.static(__dirname + '/public/'));
-
 
     io.on('connection', function(socket){
         s1.on("change", function(){
