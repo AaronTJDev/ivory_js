@@ -37,50 +37,50 @@ board.on("ready", function(){
 
     var e1 = {
         pinA : new five.Sensor({
-            pin:8,
-            type: "digital",
-            threshold:2,
-            freq:4
-        }),
-        pinB : new five.Sensor({
-            pin:9,
-            type: "digital",
-            threshold:2,
-            freq:4
-        }),
-        press: new five.Button(10)
-    }
-
-    var e2 = {
-        pinA : new five.Sensor({
             pin:2,
             type: "digital",
             threshold:2,
-            freq:4
+            freq:2
         }),
         pinB : new five.Sensor({
             pin:3,
             type: "digital",
             threshold:2,
-            freq:4
+            freq:2
         }),
         press: new five.Button(4)
     }
 
-    var e3 = {
+    var e2 = {
         pinA : new five.Sensor({
             pin:5,
             type: "digital",
-            threshold:2,
-            freq:4
+            threshold:50,
+            freq:2
         }),
         pinB : new five.Sensor({
             pin:6,
             type: "digital",
-            threshold:2,
-            freq:4
+            threshold:50,
+            freq:2
         }),
         press: new five.Button(7)
+    }
+
+    var e3 = {
+        pinA : new five.Sensor({
+            pin:8,
+            type: "digital",
+            threshold:2,
+            freq:2
+        }),
+        pinB : new five.Sensor({
+            pin:9,
+            type: "digital",
+            threshold:2,
+            freq:2
+        }),
+        press: new five.Button(10)
     }
 
     var e4 = {
@@ -88,13 +88,13 @@ board.on("ready", function(){
             pin:11,
             type: "digital",
             threshold:2,
-            freq:4
+            freq:2
         }),
         pinB : new five.Sensor({
             pin:12,
             type: "digital",
             threshold:2,
-            freq:4
+            freq:2
         }),
         press: new five.Button(13)
     }
@@ -204,10 +204,8 @@ board.on("ready", function(){
          */
         function manageInputs(socketName){
             if( values[0] === 1 && values[1] === 0  && values[2] === 1 ){
-                console.log('up');
                 socket.emit(socketName, 1);
             } else if( values[0] === 0 && values[1] === 1 && values[2] === 0  ){
-                console.log('down');
                 socket.emit(socketName, 0);
             }
             if(values.length > 5){

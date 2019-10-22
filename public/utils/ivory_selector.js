@@ -38,31 +38,13 @@ var ivory = {
             let dimensions = selected.ivory.dimensions;
             let mode = dimensions.mode[0];
 
-            if ( mode === "bootstrap"){
-                let bootstrap = dimensions.bootstrap;
-                let counter = bootstrap.counter;
-
-                if (encoder === 1){
-                    dimensions.bootstrap.counter += 1;
-                    
-                    if(counter % 6 === 0){
-                        leftRotate(bootstrap.gridWidth);
-                        gridDefine(document.deviceWidth, bootstrap.gridWidth[0], selected);
-                    }
-                } else if (encoder === 0) {
-                    dimensions.bootstrap.counter -= 1
-                    if (counter % 6 === 0){
-                        rightRotate(bootstrap.gridWidth);
-                        gridDefine(document.deviceWidth, bootstrap.gridWidth[0], selected);
-                    }
-                }
-            } else if(mode === "standard"){
+            if(mode === "standard" || mode ==='bootstrap' ){
                 if(encoder === 1){
-                    dimensions[mode].height += 4;
-                    selected.style.height = dimensions[mode].height + 'px';
+                    dimensions['standard'].height += 4;
+                    selected.style.height = dimensions['standard'].height + 'px';
                 } else if(encoder === 0){
-                    dimensions[mode].height -= 4;
-                    selected.style.height = dimensions[mode].height + 'px';
+                    dimensions['standard'].height -= 4;
+                    selected.style.height = dimensions['standard'].height + 'px';
                 }
             } else if(mode === "padding"){
                 if(encoder === 1){
@@ -101,13 +83,22 @@ var ivory = {
             let dimensions = selected.ivory.dimensions;
             let mode = dimensions.mode[0];
 
-            if(mode === "bootstrap"){
-                if(encoder === 1){
-                    dimensions[mode].height += 4;
-                    selected.style.height = dimensions[mode].height + 'px';
-                } else if(encoder === 0){
-                    dimensions[mode].height -= 4;
-                    selected.style.height = dimensions[mode].height + 'px';
+            if ( mode === "bootstrap"){
+                let bootstrap = dimensions.bootstrap;
+                let counter = bootstrap.counter;
+
+                if (encoder === 1){
+                    dimensions.bootstrap.counter += 1;
+                    if(counter % 6 === 0){
+                        leftRotate(bootstrap.gridWidth);
+                        gridDefine(document.deviceWidth, bootstrap.gridWidth[0], selected);
+                    }
+                } else if (encoder === 0) {
+                    dimensions.bootstrap.counter -= 1
+                    if (counter % 6 === 0){
+                        rightRotate(bootstrap.gridWidth);
+                        gridDefine(document.deviceWidth, bootstrap.gridWidth[0], selected);
+                    }
                 }
             } else if(mode === "standard"){
                 if(encoder === 1){
@@ -151,8 +142,24 @@ var ivory = {
             let dimensions = selected.ivory.dimensions;
             let mode = dimensions.mode[0];
 
+            if ( mode === "bootstrap"){
+                let bootstrap = dimensions.bootstrap;
+                let counter = bootstrap.counter;
 
-            if(mode === "padding"){
+                if (encoder === 1){
+                    dimensions.bootstrap.counter += 1;
+                    if(counter % 6 === 0){
+                        leftRotate(bootstrap.gridWidth);
+                        gridOffsetDefine(document.deviceOffset, bootstrap.gridWidth[0], selected);
+                    }
+                } else if (encoder === 0) {
+                    dimensions.bootstrap.counter -= 1
+                    if (counter % 6 === 0){
+                        rightRotate(bootstrap.gridWidth);
+                        gridOffsetDefine(document.deviceOffset, bootstrap.gridWidth[0], selected);
+                    }
+                }
+            } else if(mode === "padding"){
                 if(encoder === 1){
                     dimensions[mode].bottom += 4;
                     selected.style.paddingBottom = dimensions[mode].bottom + 'px';
@@ -186,7 +193,7 @@ var ivory = {
         }),
         e4: socket.on('e4', function(encoder){
             if (encoder === 2){
-                selectNext(selected);
+                selectNext();
             }
 
             let dimensions = selected.ivory.dimensions;
@@ -295,6 +302,7 @@ function addElement(){
     selected.classList.toggle('selected');
     selected = newElement;
     selected.classList.toggle('selected');
+    selected.classList.toggle('box');
 }
 
 function initialize(){
@@ -305,6 +313,7 @@ function initialize(){
     var newElement = document.createElement('div');
 
     newElement.classList.toggle('selected');
+    newElement.classList.toggle('box');
     start.append(newElement);
 
     attachController(newElement);
@@ -326,11 +335,6 @@ function removeElement(){
     }
 }
 
-function updateColor(){
-    if(selected.ivory){
-        selected.ivory.colorText
-    }
-}
 
 function changeMode(){
     var first = selected.ivory.dimensions.mode.shift();
@@ -362,6 +366,7 @@ function getWindowWidth(){
     // Get width and height of the window excluding scrollbars
     var w = document.documentElement.clientWidth;
     var deviceWidth;
+    var deviceOffset
 
         if(w < 576){
             deviceWidth = 'col-'
@@ -375,12 +380,11 @@ function getWindowWidth(){
             deviceWidth = 'col-xl-'
         }
 
-    return document.deviceWidth = deviceWidth
+    document.deviceWidth = deviceWidth;
+    document.deviceOffset = deviceOffset;
 }
 
 function gridDefine(deviceWidth, gridWidth, target){
-    console.log(deviceWidth + gridWidth)
-    console.log(gridWidth)
     const colRegex = {
         xs: /col-[0-9]{1,2}/,
         sm: /col-sm-[0-9]{1,2}/,
@@ -389,53 +393,92 @@ function gridDefine(deviceWidth, gridWidth, target){
         xl: /col-xl-[0-9]{1,2}/
     }
 
-    console.log(target.className);
-
-
     switch(deviceWidth){
         case 'col-':
             if(target.className.search(colRegex.xs) === -1){
-                console.log('toggling element')
                 target.classList.toggle(deviceWidth + gridWidth)
             } else if( target.className.search(colRegex.xs) >= 0){
-                console.log('other condition');
                 target.className = target.className.replace(colRegex.xs, deviceWidth + gridWidth)
             }
             break;
         case 'col-sm-':
             if(target.className.search(colRegex.sm) === -1){
-                console.log('toggling element')
                 target.classList.toggle(deviceWidth + gridWidth)
             } else if( target.className.search(colRegex.sm) >= 0){
-                console.log('other condition');
                 target.className = target.className.replace(colRegex.sm, deviceWidth + gridWidth)
             }
             break;
         case 'col-md-':
             if(target.className.search(colRegex.md) === -1){
-                console.log('toggling element')
                 target.classList.toggle(deviceWidth + gridWidth)
             } else if( target.className.search(colRegex.md) >= 0){
-                console.log('other condition');
                 target.className = target.className.replace(colRegex.md, deviceWidth + gridWidth)
             }
             break;
         case 'col-lg-':
             if(target.className.search(colRegex.lg) === -1){
-                console.log('toggling element')
                 target.classList.toggle(deviceWidth + gridWidth)
             } else if( target.className.search(colRegex.lg) >= 0){
-                console.log('other condition');
                 target.className = target.className.replace(colRegex.lg, deviceWidth + gridWidth)
             }
             break;
         case 'col-xl-':
             if(target.className.search(colRegex.xl) === -1){
-                console.log('toggling element')
                 target.classList.toggle(deviceWidth + gridWidth)
             } else if( target.className.search(colRegex.xl) >= 0){
-                console.log('other condition');
                 target.className = target.className.replace(colRegex.xl, deviceWidth + gridWidth)
+            }
+            break;
+    }
+}
+
+function gridOffsetDefine(deviceOffset, gridWidth, target){
+    console.log(deviceOffset + gridWidth)
+    console.log(gridWidth)
+    const offsetRegex = {
+        xs: /offset-[0-9]{1,2}/,
+        sm: /offset-sm-[0-9]{1,2}/,
+        md: /offset-md-[0-9]{1,2}/,
+        lg: /offset-lg-[0-9]{1,2}/,
+        xl: /offset-xl-[0-9]{1,2}/
+    }
+
+    console.log(target.className);
+
+    switch(deviceOffset){
+        case 'offset-':
+            if(target.className.search(offsetRegex.xs) === -1){
+                target.classList.toggle(deviceOffset + gridWidth)
+            } else if( target.className.search(offsetRegex.xs) >= 0){
+                target.className = target.className.replace(offsetRegex.xs, deviceOffset + gridWidth)
+            }
+            break;
+        case 'offset-sm-':
+            if(target.className.search(offsetRegex.sm) === -1){
+                target.classList.toggle(deviceOffset + gridWidth)
+            } else if( target.className.search(offsetRegex.sm) >= 0){
+                target.className = target.className.replace(offsetRegex.sm, deviceOffset + gridWidth)
+            }
+            break;
+        case 'offset-md-':
+            if(target.className.search(offsetRegex.md) === -1){
+                target.classList.toggle(deviceOffset + gridWidth)
+            } else if( target.className.search(offsetRegex.md) >= 0){
+                target.className = target.className.replace(offsetRegex.md, deviceOffset + gridWidth)
+            }
+            break;
+        case 'offset-lg-':
+            if(target.className.search(offsetRegex.lg) === -1){
+                target.classList.toggle(deviceOffset + gridWidth)
+            } else if( target.className.search(offsetRegex.lg) >= 0){
+                target.className = target.className.replace(offsetRegex.lg, deviceOffset + gridWidth)
+            }
+            break;
+        case 'offset-xl-':
+            if(target.className.search(offsetRegex.xl) === -1){
+                target.classList.toggle(deviceOffset + gridWidth)
+            } else if( target.className.search(offsetRegex.xl) >= 0){
+                target.className = target.className.replace(offsetRegex.xl, deviceOffset + gridWidth)
             }
             break;
     }
