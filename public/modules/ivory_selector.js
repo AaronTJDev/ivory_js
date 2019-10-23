@@ -5,24 +5,28 @@ var selected = initialize();
 var ivory = {
     sliders: {
         s1: socket.on('s1', function(slide){
+            selected = document.querySelector('.selected');
             let color = selected.ivory.color;
             color.red = slide
             color.colorText = `rgba(${color.red},${color.green},${color.blue },${color.alpha})`;
             selected.style.backgroundColor = color.colorText;
         }),
         s2: socket.on('s2', function(slide){
+            selected = document.querySelector('.selected');
             let color = selected.ivory.color;
             color.green = slide
             color.colorText = `rgba(${color.red},${color.green},${color.blue },${color.alpha})`;
             selected.style.backgroundColor = color.colorText;
         }),
         s3: socket.on('s3', function(slide){
+            selected = document.querySelector('.selected');
             let color = selected.ivory.color;
             color.blue = slide
             color.colorText = `rgba(${color.red},${color.green},${color.blue },${color.alpha})`;
             selected.style.backgroundColor = color.colorText;
         }),
         s4: socket.on('s4', function(slide){
+            selected = document.querySelector('.selected');
             let color = selected.ivory.color;
             color.alpha = slide
             color.colorText = `rgba(${color.red},${color.green},${color.blue },${color.alpha})`;
@@ -31,6 +35,7 @@ var ivory = {
     },
     encoders: {
         e1: socket.on('e1', function(encoder){
+            selected = document.querySelector('.selected');
             if (encoder === 2){
                 addElement();
             }
@@ -76,6 +81,7 @@ var ivory = {
             }
         }),
         e2: socket.on('e2', function(encoder){
+            selected = document.querySelector('.selected');
             if (encoder === 2){
                 changeMode();
             }
@@ -135,6 +141,7 @@ var ivory = {
             }
         }),
         e3: socket.on('e3', function(encoder){
+            selected = document.querySelector('.selected');
             if (encoder === 2){
                 selectPrev();
             }
@@ -192,6 +199,7 @@ var ivory = {
             }
         }),
         e4: socket.on('e4', function(encoder){
+            selected = document.querySelector('.selected');
             if (encoder === 2){
                 selectNext();
             }
@@ -224,9 +232,6 @@ var ivory = {
                     selected.style.marginLeft = dimensions[mode].left + 'px';
                 }
             }
-        }),
-        e5: socket.on('e5', function(encoder){
-            
         })
     }
 }
@@ -242,14 +247,17 @@ function attachController(element){
 }
 
 function selectNext(){
-    console.log('selecting next')
+    var selected = document.querySelector('.selected');
+
     var next = selected.nextElementSibling;
     if(next && next.tagName !== 'NOSCRIPT' && !next.ivory){
+        console.log('selecting next')
         selected.classList.toggle("selected");
         selected = eleselectedment.nextElementSibling;
         selected.classList.toggle("selected");
         attachController(selected);
     } else if(next && next.tagName !== 'SCRIPT') {
+        console.log('selecting next')
         selected.classList.toggle("selected");
         selected = selected.nextElementSibling;
         selected.classList.toggle("selected");
@@ -259,10 +267,12 @@ function selectNext(){
 }
 
 function selectPrev(){
-    console.log('selecting previous')
+    var selected = document.querySelector('.selected');
+    
     var previous = selected.previousElementSibling;
 
     if(previous && previous.tagName !== 'SCRIPT'){
+        console.log('selecting previous')
         selected.classList.toggle("selected");
         selected = selected.previousElementSibling;
         selected.classList.toggle("selected");
@@ -272,6 +282,7 @@ function selectPrev(){
 }
 
 function selectChild(){
+    var selected = document.querySelector('.selected');
     var child = selected.children;
 
     if(child.length > 0){
@@ -284,6 +295,7 @@ function selectChild(){
 }
 
 function selectParent(){
+    var selected = document.querySelector('.selected');
     var parent = selected.parentElement;
 
     if(parent && parent.tagName !== 'HTML'){
@@ -296,6 +308,8 @@ function selectParent(){
 }
 
 function addElement(){
+    var selected = document.querySelector('.selected');
+
     var newElement = document.createElement('div');
     attachController(newElement);
     selected.insertAdjacentElement('afterend', newElement);
@@ -322,11 +336,13 @@ function initialize(){
 }
 
 function removeElement(){
-    console.log('removing element from DOM.')
+    var selected = document.querySelector('.selected');
+    
     if (selected.tagName === 'BODY' && selected.tagName === 'HTML'){
         console.log('Cannot remove body or html tag.');
     }
     else if(selected){
+        console.log('removing element from DOM.')
         selected.remove()
         selected = start;
         selected.classList.toggle('selected');
@@ -337,6 +353,7 @@ function removeElement(){
 
 
 function changeMode(){
+    var selected = document.querySelector('.selected');
     var first = selected.ivory.dimensions.mode.shift();
     selected.ivory.dimensions.mode.push(first);
     console.log(`Current Mode : ${selected.ivory.dimensions.mode[0]}`);
